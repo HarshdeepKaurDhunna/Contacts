@@ -14,11 +14,13 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import java.io.File;
+
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     private Context context;
     private static final String DATABASE_NAME = "Contacts.db";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
 
     private static final String TABLE_NAME = "contact_library";
     private static final String COLUMN_ID = "_id";
@@ -58,18 +60,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      * Insert data to database call on add method
      */
     void addContact(String name, String contact){
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues cv = new ContentValues();
+        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
 
-        cv.put(COLUMN_NAME, name);
-        cv.put(COLUMN_CONTACT, contact);
+        contentValues.put(COLUMN_NAME, name);
+        contentValues.put(COLUMN_CONTACT, contact);
 
-        long result = db.insert(TABLE_NAME,null, cv);
+        long result = sqLiteDatabase.insert(TABLE_NAME,null, contentValues);
         if(result == -1){
-            Log.d("Added", "This is Added message");
             Toast.makeText(context, "Contact Not Added Successfully!", Toast.LENGTH_SHORT).show();
         }else {
-            Log.d("Not Added", "This is Not Added message");
             Toast.makeText(context, "Contact Added Successfully!", Toast.LENGTH_SHORT).show();
         }
     }
@@ -79,11 +79,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      */
     Cursor getContacts(){
         String query = "SELECT * FROM " + TABLE_NAME;
-        SQLiteDatabase db = this.getReadableDatabase();
+        SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
 
         Cursor cursor = null;
-        if(db != null){
-            cursor = db.rawQuery(query, null);
+        if(sqLiteDatabase != null){
+            cursor = sqLiteDatabase.rawQuery(query, null);
         }
         return cursor;
     }
@@ -92,13 +92,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      * update data to database call on update method
      */
     void updateContact(String row_id, String name, String contact){
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues cv = new ContentValues();
-        cv.put(COLUMN_NAME, name);
-        cv.put(COLUMN_CONTACT, contact);
+        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(COLUMN_NAME, name);
+        contentValues.put(COLUMN_CONTACT, contact);
 
 
-        long result = db.update(TABLE_NAME, cv, "_id=?", new String[]{row_id});
+        long result = sqLiteDatabase.update(TABLE_NAME, contentValues, "_id=?", new String[]{row_id});
         if(result == -1){
             Toast.makeText(context, "Contact Not Updated Successfully!", Toast.LENGTH_SHORT).show();
         }else {
@@ -110,8 +110,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      * delete data to database call on delete method
      */
     void deleteOneRow(String row_id){
-        SQLiteDatabase db = this.getWritableDatabase();
-        long result = db.delete(TABLE_NAME, "_id=?", new String[]{row_id});
+        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
+        long result = sqLiteDatabase.delete(TABLE_NAME, "_id=?", new String[]{row_id});
         if(result == -1){
             Toast.makeText(context, "Failed To Delete Contact", Toast.LENGTH_SHORT).show();
         }else{
